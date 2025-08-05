@@ -233,7 +233,7 @@
 <body>
   <header>
     <span id="toggleMenu">☰</span>
-    Aplicativo Demonstração
+    Demonstração 
     <!-- Notificação visual -->
 <div id="notificacao" class="hidden">NOVO AGENDAMENTO RECEBIDO!</div>
 
@@ -530,47 +530,55 @@ window.gerenciarServicos = async (barbeiroId) => {
   };
 
   async function carregarAgendamentos() {
-    const snapshot = await get(ref(db, 'agendamentos'));
-    const servicosSnapshot = await (await fetch(`https://fir-barber-premium-default-rtdb.firebaseio.com/servicos.json`)).json();
+  const snapshot = await get(ref(db, 'agendamentos'));
+  const servicosSnapshot = await (await fetch(`https://fir-barber-premium-default-rtdb.firebaseio.com/servicos.json`)).json();
+  const barbeirosSnapshot = await (await fetch(`https://fir-barber-premium-default-rtdb.firebaseio.com/barbeiros.json`)).json();
 
-    tabelaAgendamentos.innerHTML = '';
-    if (!snapshot.exists()) return;
+  tabelaAgendamentos.innerHTML = '';
+  if (!snapshot.exists()) return;
 
-    const agendamentos = [];
+  const agendamentos = [];
 
-    snapshot.forEach(child => {
-      const agendamento = child.val();
-      agendamento.id = child.key;
-      agendamentos.push(agendamento);
+  snapshot.forEach(child => {
+    const agendamento = child.val();
+    agendamento.id = child.key;
+    agendamentos.push(agendamento);
+  });
+
+  const filtroData = {
+    hoje: isToday,
+    semana: isThisWeek,
+    mes: isThisMonth
+  };
+
+  agendamentos
+    .filter(a => filtroData[filtroAgendamentos](a.horario))
+    .sort((a, b) => new Date(a.horario) - new Date(b.horario))
+    .forEach(agendamento => {
+      const servico = servicosSnapshot?.[agendamento.servicoId];
+      const barbeiro = barbeirosSnapshot?.[agendamento.barbeiroId];
+
+      const whatsapp = agendamento.whatsapp || '';
+      const tr = document.createElement('tr');
+
+      tr.innerHTML = `
+        <td>
+          <div><strong>${agendamento.nome}</strong></div>
+          ${barbeiro ? `<div style="margin-top:5px;"><img src="${barbeiro.foto}" width="40" height="40" style="border-radius:50%;vertical-align:middle;margin-right:6px;" /> <span>${barbeiro.nome}</span></div>` : ''}
+        </td>
+        <td>${servico?.nome || 'Serviço removido'}</td>
+        <td>${new Date(agendamento.horario).toLocaleString('pt-BR')}</td>
+        <td class="${agendamento.status === 'Cancelado' ? 'status-cancelado' : 'status-aprovado'}">${agendamento.status}</td>
+        <td>${whatsapp ? `<a href="https://wa.me/55${whatsapp.replace(/\D/g, '')}" target="_blank" style="color:#00e676"><i class="fab fa-whatsapp"></i> Contato</a>` : '—'}</td>
+        <td>
+          ${agendamento.status !== 'Cancelado' ? `<button onclick="cancelarAgendamento('${agendamento.id}')">Cancelar</button>` : ''}
+          <button onclick="concluirAgendamento('${agendamento.id}')">Concluído</button>
+        </td>
+      `;
+      tabelaAgendamentos.appendChild(tr);
     });
+}
 
-    const filtroData = {
-      hoje: isToday,
-      semana: isThisWeek,
-      mes: isThisMonth
-    };
-
-    agendamentos
-      .filter(a => filtroData[filtroAgendamentos](a.horario))
-      .sort((a, b) => new Date(a.horario) - new Date(b.horario))
-      .forEach(agendamento => {
-        const servico = servicosSnapshot?.[agendamento.servicoId];
-        const whatsapp = agendamento.whatsapp || '';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${agendamento.nome}</td>
-          <td>${servico?.nome || 'Serviço removido'}</td>
-          <td>${new Date(agendamento.horario).toLocaleString('pt-BR')}</td>
-          <td class="${agendamento.status === 'Cancelado' ? 'status-cancelado' : 'status-aprovado'}">${agendamento.status}</td>
-          <td>${whatsapp ? `<a href="https://wa.me/55${whatsapp.replace(/\D/g, '')}" target="_blank" style="color:#00e676"><i class="fab fa-whatsapp"></i> Contato</a>` : '—'}</td>
-          <td>
-            ${agendamento.status !== 'Cancelado' ? `<button onclick="cancelarAgendamento('${agendamento.id}')">Cancelar</button>` : ''}
-            <button onclick="concluirAgendamento('${agendamento.id}')">Concluído</button>
-          </td>
-        `;
-        tabelaAgendamentos.appendChild(tr);
-      });
-  }
 
   window.cancelarAgendamento = async (id) => {
   if (!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
@@ -762,4 +770,3 @@ function tocarAudioNotificacao() {
 
 </body>
 </html>
-
