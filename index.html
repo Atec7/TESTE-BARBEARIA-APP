@@ -2,370 +2,345 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" name="theme-color" content="#FFD700"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Agendamento - Barbearia</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Barbearia</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="manifest" href="manifest.json" />
   <style>
-/* Reset e base */
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #121212;
-      color: #fff;
       margin: 0; padding: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-bottom: 40px;
-    }
-    header {
-      text-align:center;
-      background: #000;
-      padding: 20px;
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 16px;
-      font-weight: 300;
-      color: #FFD700;
-      letter-spacing: 2px;
-      user-select: none;
-      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
-      border-radius: 8px;
-    }
-    #logo {
-      border-radius:50%;
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
-    }
-    main.container {
-      width: 100%;
-      max-width: 480px;
-      padding: 20px;
-      background: #1f1f1f;
-      border-radius: 12px;
-      margin-top: 20px;
-      box-shadow: 0 0 15px #FFD700aa;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    #servicos {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      max-height: 320px;
-      overflow-y: auto;
-      padding-right: 8px;
-      outline: none;
-    }
-    .servico {
-      background: #2a2a2a;
-      border-radius: 12px;
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
-      border: 2px solid transparent;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
-    .servico:hover {
-      background: #393939;
-      border-color: #FFD700;
-    }
-    .servico input[type="radio"] {
-      margin-right: 14px;
-      accent-color: #FFD700;
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-    .servico img {
-      width: 70px;
-      height: 70px;
-      border-radius: 10px;
-      object-fit: cover;
-      margin-right: 14px;
-      flex-shrink: 0;
-      box-shadow: 0 0 6px #FFD700aa;
-      transition: transform 0.3s;
-    }
-    .servico:hover img {
-      transform: scale(1.05);
-    }
-    .servico div {
-      flex: 1;
-    }
-    .servico strong {
-      font-size: 1.1rem;
-      margin-bottom: 6px;
-      display: block;
-    }
-    .servico small {
-      font-size: 0.85rem;
-      color: #ccc;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-    label {
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
-    input[type="text"],
-    input[type="date"],
-    select {
-      background-color: #2a2a2a;
-      border: none;
-      border-radius: 8px;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #111;
       color: #fff;
-      font-size: 1rem;
-      padding: 12px 16px;
-      transition: box-shadow 0.3s ease, background-color 0.3s ease;
     }
-    input[type="text"]:focus,
-    input[type="date"]:focus,
-    select:focus {
-      outline: none;
-      box-shadow: 0 0 8px #FFD700;
-      background-color: #3b3b3b;
-    }
-    select {
-      appearance: none;
-      -webkit-appearance: none;
-      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D'12'%20height%3D'12'%20viewBox%3D'0%200%2012%2012'%20xmlns%3D'http%3A//www.w3.org/2000/svg'%3E%3Cpath%20d%3D'M2%204l4%204%204-4'%20stroke%3D'%23FFD700'%20stroke-width%3D'2'%20fill%3D'none'%20fill-rule%3D'evenodd'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      background-size: 12px 12px;
-      padding-right: 36px;
-      cursor: pointer;
-    }
-    button {
-      width:100%;
-      background-color: #FFD700;
-      border: none;
-      border-radius: 10px;
-      font-weight: 900;
-      color: #121212;
-      font-size: 1.2rem;
-      padding: 14px;
-      cursor: pointer;
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 4px 12px #FFD700cc;
-      user-select: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    button:hover:not(:disabled) {
-      background-color: #e6c200;
-      box-shadow: 0 6px 14px #e6c200cc;
-    }
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-    .spinner {
-      border: 4px solid #2a2a2a;
-      border-top: 4px solid #FFD700;
-      border-radius: 50%;
-      width: 26px;
-      height: 26px;
-      animation: spin 1s linear infinite;
-      display: inline-block;
-      vertical-align: middle;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    #msgStatus {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #272727dd;
+
+    header {
+      background-color: #000;
       color: #FFD700;
-      padding: 12px 24px;
-      border-radius: 24px;
-      font-weight: 700;
-      font-size: 1rem;
-      box-shadow: 0 0 12px #FFD700cc;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-      z-index: 9999;
-    }
-    #msgStatus.show {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    @media (max-width: 520px) {
-      header {
-        font-size: 1.5rem;
-        padding: 16px;
-      }
-      main.container {
-        padding: 16px;
-      }
-      .servico img {
-        width: 55px;
-        height: 55px;
-      }
-      button {
-  font-size: 1rem;
-  padding: 10px;
-}
-
-    }
-
-
-    /* Tela de carregamento (splash) */
-    #splash {
-      position: fixed;
-      inset: 0;
-      background-color: #121212;
-      color: #FFD700;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
-      user-select: none;
-    }
-    #splash img {
-      border-radius: 50%;
-      width: 220px;
-      height: auto;
-      margin-bottom: 20px;
-      filter: drop-shadow(0 0 5px #FFD700);
-    }
-    #splash h1 {
-      font-size: 2.5rem;
-      font-weight: 100;
-      letter-spacing: 3px;
-      margin-bottom: 30px;
+      padding: 20px;
+      font-size: 1.8rem;
       text-align: center;
-      text-shadow: 0 0 10px #FFD700;
+      box-shadow: 0 2px 8px rgba(255,215,0,0.5);
+      position: relative;
     }
-    #progressBarContainer {
-      width: 70%;
-      max-width: 400px;
-      height: 14px;
-      background-color: #2a2a2a;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 0 10px #FFD700cc inset;
-    }
-    #progressBar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #FFD700, #e6c200);
-      border-radius: 10px;
-      transition: width 0.1s ease;
-      box-shadow: 0 0 8px #FFD700;
-    }
-    .titulo{
-      font-size:16px;
-    }
-}
 
     #toggleMenu {
-  font-size: 5px;
-  margin-left: auto;
-  cursor: pointer;
-  color: #FFD700;
-}
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      font-size: 24px;
+      cursor: pointer;
+    }
 
-#menuHistorico {
+    .container {
+      display: flex;
+      position: relative;
+    }
+
+    .menu {
+      width: 220px;
+      background: #000;
+      padding: 20px;
+      box-shadow: 2px 0 8px #FFD70055;
+      position: absolute;
+      top: 80px;
+      left: 0;
+      height: calc(100vh - 80px);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+      transform: translateX(-100%);
+    }
+
+    .menu.menu-open {
+      transform: translateX(0);
+    }
+
+    .menu button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      background: #FFD700;
+      color: #000;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .menu button:hover {
+      background: #e6c200;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h2 {
+      color: #FFD700;
+      margin-top: 40px;
+    }
+
+    p{
+        color: red;
+    }
+    form, .tabela, .servicos-container {
+      background: #1f1f1f;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      box-shadow: 0 0 12px #FFD70055;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #2a2a2a;
+      color: #fff;
+    }
+
+    button {
+      margin-top: 15px;
+      background: #FFD700;
+      color: #000;
+      padding: 12px 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px #FFD70080;
+    }
+
+    button:hover {
+      background: #e6c200;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #444;
+    }
+
+    th {
+      background: #222;
+      color: #FFD700;
+    }
+
+    img {
+      max-width: 80px;
+      border-radius: 6px;
+    }
+
+    .status-aprovado { color: lime; }
+    .status-cancelado { color: red; }
+
+    #btnLimparAgendamentos {
+      background: rgb(1, 169, 1) !important;
+      color: #fff !important;
+      margin-bottom: 10px !important;
+    }
+
+    #btnLimparAgendamentos:hover {
+      background: rgb(4, 143, 4) !important;
+    }
+
+    .hidden {
+      display: none;
+    }
+    #notificacao {
   position: fixed;
-  top: 80px;
-  left: 0;
-  width: 280px;
-  height: calc(100vh - 80px);
-  background: #000;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #28a745, #218838); /* verde moderno */
   color: #fff;
-  box-shadow: 2px 0 10px #FFD70055;
-  padding: 20px;
-  overflow-y: auto;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
-  z-index: 2000;
-  border-radius: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 600;
+  padding: 16px 24px;
+  border-radius: 12px;
+  z-index: 9999;
+  box-shadow: 0 4px 20px rgba(0, 128, 0, 0.3);
+  animation: fadeInSlide 0.6s ease-out, subtlePulse 2.5s infinite;
+  max-width: 300px;
+  box-sizing: border-box;
 }
 
-#menuHistorico.open {
-  transform: translateX(0);
+/* Animação de entrada */
+@keyframes fadeInSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-#menuHistorico h3 {
-  color: #FFD700;
-  margin-bottom: 20px;
+/* Pulso sutil */
+@keyframes subtlePulse {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 24px rgba(40, 167, 69, 0.6);
+  }
+}
+#btn-som {
+  background-color: #eee;
+  border: 2px solid #888;
+  color: #333;
+  padding: 10px 18px;
+  font-size: 16px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
-    
+#btn-som.ativo {
+  background-color: #28a745;
+  color: white;
+  border-color: #218838;
+}
+
+#btn-som:hover {
+  opacity: 0.9;
+}
+
+
   </style>
 </head>
 <body>
-  <div id="splash">
-    <img src="logo.jpg" alt="Logo da Barbearia" />
-    <h1>Aplicativo Demonstração</h1>
-    <div id="progressBarContainer">
-      <div id="progressBar"></div>
+  <header>
+    <span id="toggleMenu">☰</span>
+    Aplicativo Demonstração
+    <!-- Notificação visual -->
+<div id="notificacao" class="hidden">NOVO AGENDAMENTO RECEBIDO!</div>
+
+<!-- Som de alerta -->
+<audio id="alertaSom" preload="auto">
+ <source src="https://dl.dropbox.com/scl/fi/952f47zyjug772i23w4dc/luvvoice.com-20250730-30Urpa.mp3?rlkey=u8ygm2zaoexeklz0cc62146gs&st=4cr7gy8f&dl=0" type="audio/ogg">
+  <source src="https://dl.dropbox.com/scl/fi/952f47zyjug772i23w4dc/luvvoice.com-20250730-30Urpa.mp3?rlkey=u8ygm2zaoexeklz0cc62146gs&st=4cr7gy8f&dl=0" type="audio/mpeg">
+</audio>
+
+
+  </header>
+
+  <div class="container">
+    <div class="menu" id="menuLateral">
+      <button id="btn-som">🔕 Ativar Notificações Sonoras</button>
+      <button onclick="mostrar('agendamentos')">Agendamentos</button>
+      <button onclick="mostrar('cadastro')">Cadastro de Serviços</button>
+      <button onclick="mostrar('servicos')">Serviços Cadastrados</button>
+      <button onclick="mostrar('cadastroBarbeiro')">Cadastro de Barbeiros</button>
+
     </div>
-    <p>www.atecseven.com.br</p>
+
+    <main>
+      <div id="cadastro" class="hidden">
+        <h2>Cadastrar / Editar Serviço</h2>
+        <form id="formServico">
+          <label>Corte/Serviço</label>
+          <input type="text" id="nomeServico" required />
+          <label>Preço (R$)</label>
+          <input type="text" id="precoServico" required />
+          <label>Duração (min)</label>
+          <input type="text" id="tempoServico" required />
+          <label>URL da Imagem</label>
+          <input type="text" id="imagemServico" required />
+          <label>Vincular a um Barbeiro</label>
+            <select id="selectBarbeiro" required>
+            <option value="">Selecione um barbeiro</option>
+            </select>
+
+          <button type="submit" id="btnSalvar">Cadastrar Serviço</button>
+        </form>
+      </div>
+
+      <div id="servicos" class="hidden">
+        <h2>Serviços Cadastrados</h2>
+        <div class="servicos-container">
+          <table id="tabelaServicos">
+            <thead>
+              <tr><th>Imagem</th><th>Nome</th><th>Preço</th><th>Duração</th><th>Ações</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="agendamentos">
+        <h2>Agendamentos</h2>
+       
+<button onclick="location.reload()">Mostrar Hoje</button>
+  <button onclick="filtroAgendamento('semana')">Mostrar Semana</button>
+  <button onclick="filtroAgendamento('mes')">Mostrar Mês</button>
+ <button id="btnLimparAgendamentos"><b>Concluir Todos</b></button>
+
+
+        <p> Sempre <b>Concluir Todos</b> ao final do Expediente.</p>
+        <div class="tabela" style="overflow-x:auto;">
+          <table id="tabelaAgendamentos">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Serviço</th>
+                <th>Horário</th>
+                <th>Status</th>
+                <th>WhatsApp</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="cadastroBarbeiro" class="hidden">
+  <h2>Cadastrar Barbeiro</h2>
+  <form id="formBarbeiro">
+    <label>Nome do Barbeiro</label>
+    <input type="text" id="nomeBarbeiro" required />
+    
+    <label>Foto (URL)</label>
+    <input type="text" id="fotoBarbeiro" required />
+    
+    <button type="submit">Cadastrar Barbeiro</button>
+  </form>
+  <h3>Barbeiros Cadastrados</h3>
+  <div id="listaBarbeiros"></div>
+</div>
+
+    </main>
   </div>
-
-  <header><img src="logo.jpg" alt="Logo da Barbearia" id="logo" />
-    <span id="toggleMenu"><i class="fa-solid fa-clock-rotate-left"></i></span>
-    <div id="menuHistorico"></div>
-<h1 class="titulo">Aplicativo Demonstração</h1></header>
-  <main class="container" style="display:none;">
-    <form id="formAgendamento" novalidate>
-      <div id="servicos"></div>
-
-      <div class="form-group">
-        <label for="nome">Seu nome:</label>
-        <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required minlength="3" />
-      </div>
-
-      <div class="form-group">
-        <label for="whatsapp">WhatsApp:</label>
-        <input type="text" id="whatsapp" name="whatsapp" placeholder="Digite seu número de WhatsApp" />
-      </div>
-
-      <div class="form-group">
-        <label for="dataAgendamento">Data do agendamento:</label>
-        <input type="date" id="dataAgendamento" name="dataAgendamento" required />
-      </div>
-
-      <div class="form-group">
-        <label for="horaAgendamento">Horário disponível:</label>
-        <select id="horaAgendamento" name="horaAgendamento" required>
-          <option value="">Selecione uma data primeiro</option>
-        </select>
-      </div>
-      <br><br>
-      <button type="submit" id="btnAgendar">Agendar <i class="fa-solid fa-calendar-check"></i></button>
-    </form>
-  </main>
-
-  <div id="msgStatus"></div>
 
   <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
-  import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
+  import { getDatabase, ref, push, set, remove, onValue, update, get } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
+
+  let somLiberado = false;
+  document.addEventListener('click', () => {
+    somLiberado = true;
+  });
 
   const firebaseConfig = {
     apiKey: "AIzaSyD9kWG_RgdfBURwHafLWcN3P_qVxMvqHTE",
@@ -374,249 +349,383 @@
     projectId: "demobarbearia-4eb73",
     storageBucket: "demobarbearia-4eb73.appspot.com",
     messagingSenderId: "522986196174",
-    appId: "1:522986196174:web:7d78eb757acf64f3ff149f",
-    measurementId: "G-S0NJ2LX550"
+    appId: "1:522986196174:web:7d78eb757acf64f3ff149f"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  const servicosDiv = document.getElementById("servicos");
-  const form = document.getElementById("formAgendamento");
-  const btnAgendar = document.getElementById("btnAgendar");
-  const msgStatus = document.getElementById("msgStatus");
-  const campoData = document.getElementById("dataAgendamento");
-  const campoHora = document.getElementById("horaAgendamento");
+  const formServico = document.getElementById('formServico');
+  const tabelaServicos = document.querySelector('#tabelaServicos tbody');
+  const tabelaAgendamentos = document.querySelector('#tabelaAgendamentos tbody');
+  const btnSalvar = document.getElementById('btnSalvar');
+  const btnLimparAgendamentos = document.getElementById('btnLimparAgendamentos');
 
-  let servicosDados = {};
+  let servicoEditando = null;
+  let filtroAgendamentos = 'hoje';
 
-  function showMessage(msg, isError = false) {
-    msgStatus.textContent = msg;
-    msgStatus.style.backgroundColor = isError ? '#7a1e1edd' : '#272727dd';
-    msgStatus.classList.add('show');
-    setTimeout(() => msgStatus.classList.remove('show'), 4000);
-  }
+  const isToday = (dataISO) => {
+    const hoje = new Date();
+    const data = new Date(dataISO);
+    return (
+      data.getFullYear() === hoje.getFullYear() &&
+      data.getMonth() === hoje.getMonth() &&
+      data.getDate() === hoje.getDate()
+    );
+  };
 
-  function gerarTodosHorarios() {
-    const horarios = [];
-    const inicio = new Date(); inicio.setHours(9, 0, 0, 0);
-    const fim = new Date(); fim.setHours(21, 0, 0, 0);
-    let atual = new Date(inicio);
-    while (atual < fim) {
-      const h = atual.getHours().toString().padStart(2, '0');
-      const m = atual.getMinutes().toString().padStart(2, '0');
-      horarios.push(`${h}:${m}`);
-      atual = new Date(atual.getTime() + 10 * 60000);
-    }
-    return horarios;
-  }
+  const isThisWeek = (dataISO) => {
+    const hoje = new Date();
+    const data = new Date(dataISO);
+    const primeiroDia = new Date(hoje);
+    const ultimoDia = new Date(hoje);
+    primeiroDia.setDate(hoje.getDate() - hoje.getDay() + 1);
+    ultimoDia.setDate(hoje.getDate() + (7 - hoje.getDay()));
+    primeiroDia.setHours(0, 0, 0, 0);
+    ultimoDia.setHours(23, 59, 59, 999);
+    return data >= primeiroDia && data <= ultimoDia;
+  };
 
-  function validarHorario(horarioISO) {
-    if (!horarioISO || !horarioISO.includes('T')) return false;
-    const [dataStr, horaStr] = horarioISO.split('T');
-    if (!dataStr || !horaStr) return false;
-    const [ano, mes, dia] = dataStr.split('-').map(Number);
-    const [hora, minuto] = horaStr.split(':').map(Number);
-    const agendamento = new Date(ano, mes - 1, dia, hora, minuto);
-    const agora = new Date();
-    if (isNaN(agendamento.getTime())) return false;
-    if (agendamento <= agora) return false;
-    const horarioValido = (hora > 9 || (hora === 9 && minuto >= 0)) &&
-                          (hora < 21 || (hora === 21 && minuto === 0));
-    return horarioValido;
-  }
+  const isThisMonth = (dataISO) => {
+    const hoje = new Date();
+    const data = new Date(dataISO);
+    return (
+      data.getFullYear() === hoje.getFullYear() &&
+      data.getMonth() === hoje.getMonth()
+    );
+  };
 
-  function atualizarHorariosDisponiveis(dataISO) {
-    campoHora.innerHTML = '<option value="">Carregando...</option>';
-    const servicoInput = form.querySelector('input[name="servico"]:checked');
-    if (!servicoInput) {
-      campoHora.innerHTML = '<option value="">Selecione um serviço primeiro</option>';
-      return;
-    }
-    const duracao = servicosDados[servicoInput.value]?.tempo || 0;
-    const todos = gerarTodosHorarios();
-    onValue(ref(db, 'agendamentos'), snapshot => {
-      const ocupados = [];
-      snapshot.forEach(child => {
-        const ag = child.val();
-        const dataAg = new Date(ag.horario);
-        if (dataAg.toISOString().split('T')[0] === dataISO) {
-          const tempo = servicosDados[ag.servicoId]?.tempo || 0;
-          ocupados.push({ start: dataAg.getTime(), end: dataAg.getTime() + tempo * 60000 });
-        }
-      });
-      const disponiveis = todos.filter(horario => {
-        const [h, m] = horario.split(':');
-        const inicio = new Date(`${dataISO}T${h}:${m}:00`);
-        const fim = new Date(inicio.getTime() + duracao * 60000);
-        if (fim.getHours() > 21 || (fim.getHours() === 21 && fim.getMinutes() > 0)) return false;
-        return !ocupados.some(o => (inicio < o.end && fim > o.start));
-      });
-      campoHora.innerHTML = disponiveis.length
-        ? '<option value="">Selecione um horário</option>' + disponiveis.map(h => `<option value="${h}">${h}</option>`).join('')
-        : '<option value="">Sem horários disponíveis</option>';
-    }, { onlyOnce: true });
-  }
+  const formBarbeiro = document.getElementById('formBarbeiro');
+const listaBarbeirosDiv = document.getElementById('listaBarbeiros');
+const selectBarbeiro = document.getElementById('selectBarbeiro');
 
-  campoData.addEventListener('change', () => {
-    if (campoData.value) atualizarHorariosDisponiveis(campoData.value);
-  });
+// Salvar barbeiro
+formBarbeiro?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const nome = document.getElementById('nomeBarbeiro').value.trim();
+  const foto = document.getElementById('fotoBarbeiro').value.trim();
 
-  async function fetchServicos() {
-    onValue(ref(db, 'servicos'), snapshot => {
-      servicosDiv.innerHTML = '';
-      servicosDados = {};
-      snapshot.forEach(child => {
-        const serv = child.val();
-        servicosDados[child.key] = serv;
-        const label = document.createElement('label'); label.className = 'servico';
-        const input = document.createElement('input');
-        input.type = 'radio'; input.name = 'servico'; input.value = child.key; input.required = true;
-        input.addEventListener('change', () => { if (campoData.value) atualizarHorariosDisponiveis(campoData.value); });
-        const img = document.createElement('img'); img.src = serv.imagem; img.alt = serv.nome;
-        const div = document.createElement('div');
-        const strong = document.createElement('strong'); strong.textContent = serv.nome;
-        const small = document.createElement('small'); small.textContent = `R$ ${serv.preco} - ${serv.tempo} min`;
-        div.appendChild(strong); div.appendChild(small);
-        label.appendChild(input); label.appendChild(img); label.appendChild(div);
-        servicosDiv.appendChild(label);
-      });
-    }, { onlyOnce: true });
-  }
+  if (!nome || !foto) return;
 
-  // ------------------ Adicionado: função registrarNotificacao ------------------
-  async function registrarNotificacao(tipo, dados = {}) {
-    await push(ref(db, 'notificacoes'), {
-      id: Math.random().toString(36).substr(2,10),
-      tipo,
-      timestamp: new Date().toISOString(),
-      ...dados
+  const novoRef = push(ref(db, 'barbeiros'));
+  await set(novoRef, { nome, foto });
+
+  formBarbeiro.reset();
+});
+
+// Carregar barbeiros e preencher a lista e o select
+function carregarBarbeiros() {
+  onValue(ref(db, 'barbeiros'), (snapshot) => {
+    listaBarbeirosDiv.innerHTML = '';
+    selectBarbeiro.innerHTML = '<option value="">Selecione um barbeiro</option>';
+
+    snapshot.forEach(child => {
+      const barbeiro = child.val();
+      const id = child.key;
+
+      // Exibir lista
+      const div = document.createElement('div');
+      div.innerHTML = `
+        <p><img src="${barbeiro.foto}" style="max-width:60px; vertical-align:middle; border-radius:50%;"> ${barbeiro.nome}</p>
+      `;
+      listaBarbeirosDiv.appendChild(div);
+
+      // Preencher select
+      const option = document.createElement('option');
+      option.value = id;
+      option.textContent = barbeiro.nome;
+      selectBarbeiro.appendChild(option);
     });
-  }
-  window.registrarNotificacao = registrarNotificacao;
-  // ------------------------------------------------------------------------------
-
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
-    const nome = form.nome.value.trim();
-    const whatsapp = form.whatsapp.value.trim();
-    const data = campoData.value;
-    const hora = campoHora.value;
-    const servicoInput = form.querySelector('input[name="servico"]:checked');
-    const horario = `${data}T${hora}:00`;
-    if (!nome || nome.length < 3 || !validarHorario(horario) || !servicoInput || !hora) {
-      showMessage('Provavelmente já passou desse horário🤔⏱.', true);
-      return;
-    }
-    btnAgendar.disabled = true;
-    btnAgendar.innerHTML = 'Agendando...';
-    try {
-      await push(ref(db, 'agendamentos'), {
-        nome, whatsapp, horario, servicoId: servicoInput.value,
-        status: 'Agendado', criadoEm: new Date().toISOString()
-      });
-      showMessage('Agendamento realizado com sucesso!');
-      form.reset();
-      await salvarNoHistorico({ nome, horario });
-      campoHora.innerHTML = '<option value="">Selecione uma data primeiro</option>';
-    } catch (err) {
-      showMessage('Erro ao agendar: ' + err.message, true);
-    } finally {
-      btnAgendar.disabled = false;
-      btnAgendar.innerHTML = 'Agendar <i class="fa-solid fa-calendar-check"></i>';
-    }
   });
+}
 
-  function initSplash() {
-    const splash = document.getElementById('splash');
-    const progressBar = document.getElementById('progressBar');
-    const container = document.querySelector('main.container');
-    let start = null;
-    function step(timestamp) {
-      if (!start) start = timestamp;
-      const elapsed = timestamp - start;
-      const progress = Math.min((elapsed / 3000) * 100, 100);
-      progressBar.style.width = progress + '%';
-      if (elapsed < 3000) requestAnimationFrame(step);
-      else {
-        splash.style.display = 'none';
-        container.style.display = 'flex';
-      }
+carregarBarbeiros();
+
+
+  formServico.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nome = document.getElementById('nomeServico').value.trim();
+    const preco = document.getElementById('precoServico').value.trim();
+    const tempo = document.getElementById('tempoServico').value.trim();
+    const imagem = document.getElementById('imagemServico').value.trim();
+    const barbeiroId = document.getElementById('selectBarbeiro').value;
+
+
+    if (!nome || !preco || !tempo || !imagem || !barbeiroId) return;
+
+    if (servicoEditando) {
+  await update(ref(db, `servicos/${servicoEditando}`), { nome, preco, tempo, imagem, barbeiroId });
+  servicoEditando = null;
+  btnSalvar.textContent = "Cadastrar Serviço";
+} else {
+  const novoRef = push(ref(db, 'servicos'));
+  await set(novoRef, { nome, preco, tempo, imagem, barbeiroId });
+}
+
+  onValue(ref(db, 'servicos'), async (snapshot) => {
+  const barbeirosSnapshot = await get(ref(db, 'barbeiros'));
+  const barbeiros = barbeirosSnapshot.exists() ? barbeirosSnapshot.val() : {};
+
+  tabelaServicos.innerHTML = '';
+  snapshot.forEach(child => {
+    const { nome, preco, tempo, imagem, barbeiroId } = child.val();
+    const barbeiroNome = barbeiros?.[barbeiroId]?.nome || 'Não vinculado';
+    const barbeiroFoto = barbeiros?.[barbeiroId]?.foto || '';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><img src="${imagem}" /></td>
+      <td>${nome}<br><small><img src="${barbeiroFoto}" style="width:20px;border-radius:50%;"> ${barbeiroNome}</small></td>
+      <td>R$ ${preco}</td>
+      <td>${tempo} min</td>
+      <td>
+        <button onclick="editarServico('${child.key}', '${nome}', '${preco}', '${tempo}', '${imagem}', '${barbeiroId}')">Editar</button>
+        <button onclick="removerServico('${child.key}')">Excluir</button>
+      </td>
+    `;
+    tabelaServicos.appendChild(tr);
+  });
+});
+
+
+  window.editarServico = (id, nome, preco, tempo, imagem, barbeiroId) => {
+  document.getElementById('nomeServico').value = nome;
+  document.getElementById('precoServico').value = preco;
+  document.getElementById('tempoServico').value = tempo;
+  document.getElementById('imagemServico').value = imagem;
+  document.getElementById('selectBarbeiro').value = barbeiroId || '';
+  servicoEditando = id;
+  btnSalvar.textContent = "Salvar Edição";
+  mostrar('cadastro');
+  document.getElementById('menuLateral').classList.remove('menu-open');
+};
+
+
+  window.removerServico = async (id) => {
+    if (confirm('Deseja excluir este serviço?')) {
+      await remove(ref(db, `servicos/${id}`));
     }
-    requestAnimationFrame(step);
+  };
+
+  async function carregarAgendamentos() {
+    const snapshot = await get(ref(db, 'agendamentos'));
+    const servicosSnapshot = await (await fetch(`https://demobarbearia-4eb73-default-rtdb.firebaseio.com/servicos.json`)).json();
+
+    tabelaAgendamentos.innerHTML = '';
+    if (!snapshot.exists()) return;
+
+    const agendamentos = [];
+
+    snapshot.forEach(child => {
+      const agendamento = child.val();
+      agendamento.id = child.key;
+      agendamentos.push(agendamento);
+    });
+
+    const filtroData = {
+      hoje: isToday,
+      semana: isThisWeek,
+      mes: isThisMonth
+    };
+
+    agendamentos
+      .filter(a => filtroData[filtroAgendamentos](a.horario))
+      .sort((a, b) => new Date(a.horario) - new Date(b.horario))
+      .forEach(agendamento => {
+        const servico = servicosSnapshot?.[agendamento.servicoId];
+        const whatsapp = agendamento.whatsapp || '';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${agendamento.nome}</td>
+          <td>${servico?.nome || 'Serviço removido'}</td>
+          <td>${new Date(agendamento.horario).toLocaleString('pt-BR')}</td>
+          <td class="${agendamento.status === 'Cancelado' ? 'status-cancelado' : 'status-aprovado'}">${agendamento.status}</td>
+          <td>${whatsapp ? `<a href="https://wa.me/55${whatsapp.replace(/\D/g, '')}" target="_blank" style="color:#00e676"><i class="fab fa-whatsapp"></i> Contato</a>` : '—'}</td>
+          <td>
+            ${agendamento.status !== 'Cancelado' ? `<button onclick="cancelarAgendamento('${agendamento.id}')">Cancelar</button>` : ''}
+            <button onclick="concluirAgendamento('${agendamento.id}')">Concluído</button>
+          </td>
+        `;
+        tabelaAgendamentos.appendChild(tr);
+      });
   }
 
-  fetchServicos();
-  initSplash();
-</script>
+  window.cancelarAgendamento = async (id) => {
+  if (!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
 
-<script>
+  try {
+    await remove(ref(db, `agendamentos/${id}`));
+  } catch (error) {
+    alert('Erro ao cancelar agendamento: ' + error.message);
+  }
+};
+
+
+  window.concluirAgendamento = async (id) => {
+    try {
+      await remove(ref(db, `agendamentos/${id}`));
+    } catch (error) {
+      alert('Erro ao concluir agendamento: ' + error.message);
+    }
+  };
+
+  btnLimparAgendamentos.addEventListener('click', async () => {
+  if (!confirm('Confirme abaixo por favor!')) return;
+
+  try {
+    const snapshot = await get(ref(db, 'agendamentos'));
+    if (!snapshot.exists()) return;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Zera horas para comparar apenas a data
+
+    const promises = [];
+    snapshot.forEach(child => {
+      const agendamento = child.val();
+      const agendamentoDate = new Date(agendamento.horario);
+      agendamentoDate.setHours(0, 0, 0, 0); // Zera também aqui
+
+      if (agendamentoDate <= today) {
+        promises.push(remove(ref(db, `agendamentos/${child.key}`)));
+      }
+    });
+
+    await Promise.all(promises);
+    alert('Todos os agendamentos até hoje foram concluídos.');
+  } catch (error) {
+    alert('Erro ao concluir agendamentos: ' + error.message);
+  }
+});
+
+
+  window.mostrar = (secao) => {
+    ['cadastro', 'agendamentos', 'servicos'].forEach(id => {
+      document.getElementById(id).classList.add('hidden');
+    });
+    document.getElementById(secao).classList.remove('hidden');
+    document.getElementById('menuLateral').classList.remove('menu-open');
+  };
+
   const toggleMenu = document.getElementById('toggleMenu');
-  const menuHistorico = document.getElementById('menuHistorico');
+  const menu = document.getElementById('menuLateral');
 
   toggleMenu.addEventListener('click', () => {
-    menuHistorico.classList.toggle('open');
-    document.addEventListener('click', e => {
-      const clicouForaDoMenu = !menuHistorico.contains(e.target) && !toggleMenu.contains(e.target);
-      if (menuHistorico.classList.contains('open') && clicouForaDoMenu) {
-        menuHistorico.classList.remove('open');
-      }
-    });
+    menu.classList.toggle('menu-open');
   });
 
-  const formatarDataHora = iso => {
-    const d = new Date(iso);
-    return d.toLocaleDateString('pt-BR') + ' ' +
-           d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  };
+  document.addEventListener('click', (e) => {
+    if (!menu.contains(e.target) && e.target !== toggleMenu) {
+      menu.classList.remove('menu-open');
+    }
+  });
 
-  const renderizarHistorico = () => {
-    const historico = JSON.parse(localStorage.getItem('historicoAgendamentos')) || [];
-    menuHistorico.innerHTML = '<h3>Histórico de Agendamentos</h3>';
-    historico.slice(0, 5).forEach((agendamento, index) => {
-      const div = document.createElement('div');
-      div.style.marginBottom = '16px';
-      div.style.padding = '10px';
-      div.style.background = '#1f1f1f';
-      div.style.borderRadius = '8px';
-      div.innerHTML = `
-        <strong>${agendamento.nome}</strong><br>
-        <small>${formatarDataHora(agendamento.horario)}</small>
-      `;
-      if (index === 0) {
-        const btnCancelar = document.createElement('button');
-        btnCancelar.textContent = 'Solicitar Cancelamento';
-        btnCancelar.style.marginTop = '8px';
-        btnCancelar.onclick = () => {
-          const msg = `Olá, gostaria de cancelar o agendamento de ${agendamento.nome} marcado para ${formatarDataHora(agendamento.horario)}.`;
-          window.open(`https://wa.me/5564992952748?text=${encodeURIComponent(msg)}`, '_blank');
-          window.registrarNotificacao('cancelamento', { nome: agendamento.nome, horario: agendamento.horario });
-        };
+  // Atualiza agendamentos em tempo real sempre que o banco mudar
+let agendamentosAnteriores = {};
+let primeiraLeitura = true;
 
-        const btnEspera = document.createElement('button');
-        btnEspera.textContent = 'Pedir +5 min';
-        btnEspera.style.marginTop = '6px';
-        btnEspera.onclick = () => {
-          const msg = `Olá, gostaria de solicitar um acréscimo de 5 minutos para o agendamento de ${agendamento.nome} marcado para ${formatarDataHora(agendamento.horario)}.`;
-          window.open(`https://wa.me/5564992952748?text=${encodeURIComponent(msg)}`, '_blank');
-          window.registrarNotificacao('pedir_mais_5min', { nome: agendamento.nome, horario: agendamento.horario });
-        };
+onValue(ref(db, 'agendamentos'), (snapshot) => {
+  const novosAgendamentos = {};
+  snapshot.forEach(child => {
+    novosAgendamentos[child.key] = child.val();
+  });
 
-        div.appendChild(btnCancelar);
-        div.appendChild(btnEspera);
-      }
-      menuHistorico.appendChild(div);
-    });
-  };
+  if (!primeiraLeitura) {
+    const novosIds = Object.keys(novosAgendamentos);
+    const antigosIds = Object.keys(agendamentosAnteriores);
 
-  async function salvarNoHistorico(agendamento) {
-    const historico = JSON.parse(localStorage.getItem('historicoAgendamentos')) || [];
-    historico.unshift(agendamento);
-    localStorage.setItem('historicoAgendamentos', JSON.stringify(historico.slice(0, 5)));
-    renderizarHistorico();
+    const novosRegistros = novosIds.filter(id => !antigosIds.includes(id));
+
+    if (novosRegistros.length > 0) {
+      mostrarNotificacao();
+    }
   }
 
-  renderizarHistorico();
+  agendamentosAnteriores = novosAgendamentos;
+  primeiraLeitura = false;
+  carregarAgendamentos();
+});
+
+function mostrarNotificacao() {
+  const audio = document.getElementById('alertaSom');
+  const noti = document.getElementById('notificacao');
+
+  if (somLiberado && audio) {
+    audio.volume = 1;
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.warn('Som não tocado automaticamente:', error.message);
+      });
+    }
+  } else {
+    console.warn('Som bloqueado por falta de interação do usuário.');
+  }
+
+  noti.classList.remove('hidden');
+  setTimeout(() => noti.classList.add('hidden'), 6000);
+}
+
+const botaoSom = document.getElementById('btn-som');
+
+botaoSom.addEventListener('click', () => {
+  botaoSom.classList.toggle('ativo');
+
+  if (botaoSom.classList.contains('ativo')) {
+    botaoSom.textContent = '🔔 Notificações Sonoras Ativadas';
+    // Aqui você pode ativar o som de fato
+  } else {
+    botaoSom.textContent = '🔕 Ativar Notificações Sonoras';
+    // E aqui desativar
+  }
+});
+
+
+  window.onload = () => {
+    mostrar('agendamentos');
+    carregarAgendamentos();
+  };
+
+  window.filtroAgendamento = (tipo) => {
+    filtroAgendamentos = tipo;
+    carregarAgendamentos();
+  };
+
+  // Monitorar o nó "notificacoes" no Firebase
+let notificacoesAnteriores = {};
+let primeiraLeituraNotif = true;
+
+onValue(ref(db, 'notificacoes'), (snapshot) => {
+  const novasNotificacoes = {};
+  snapshot.forEach(child => {
+    novasNotificacoes[child.key] = child.val();
+  });
+
+  if (!primeiraLeituraNotif) {
+    const novosIds = Object.keys(novasNotificacoes);
+    const antigosIds = Object.keys(notificacoesAnteriores);
+
+    const novasEntradas = novosIds.filter(id => !antigosIds.includes(id));
+
+    if (novasEntradas.length > 0) {
+      tocarAudioNotificacao();
+    }
+  }
+
+  notificacoesAnteriores = novasNotificacoes;
+  primeiraLeituraNotif = false;
+});
+
+// Toca o novo áudio da notificação
+function tocarAudioNotificacao() {
+  const som = new Audio("https://dl.dropbox.com/scl/fi/nbwejvu6r6mvcdlp0ljte/luvvoice.com-20250801-pNuFKJ.mp3?rlkey=4dvy1vzxnhfdaa1pyofegmzuh&st=t20b5r26&dl=0");
+  som.volume = 1;
+  if (somLiberado) {
+    som.play().catch(err => {
+      console.warn("Erro ao tocar áudio de notificação:", err.message);
+    });
+  }
+}
+
 </script>
 <script>
   if ('serviceWorker' in navigator) {
@@ -630,5 +739,4 @@
 
 
 </body>
-
 </html>
