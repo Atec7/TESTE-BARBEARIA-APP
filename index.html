@@ -252,7 +252,7 @@
       <button onclick="mostrar('agendamentos')">Agendamentos</button>
       <button onclick="mostrar('cadastro')">Cadastro de Serviços</button>
       <button onclick="mostrar('servicos')">Serviços Cadastrados</button>
-      <button onclick="mostrar('cadastroBarbeiro')">Cadastro de Barbeiros</button>
+      <button onclick="mostrar('barbeiros')">Gerenciar Barbeiros</button>
 
     </div>
 
@@ -268,14 +268,27 @@
           <input type="text" id="tempoServico" required />
           <label>URL da Imagem</label>
           <input type="text" id="imagemServico" required />
-          <label>Vincular a um Barbeiro</label>
-            <select id="selectBarbeiro" required>
-            <option value="">Selecione um barbeiro</option>
-            </select>
-
           <button type="submit" id="btnSalvar">Cadastrar Serviço</button>
         </form>
       </div>
+<div id="barbeiros" class="hidden">
+  <h2>Gerenciar Barbeiros</h2>
+  <form id="formBarbeiro">
+    <label>Nome do Barbeiro</label>
+    <input type="text" id="nomeBarbeiro" required />
+    <label>URL da Foto</label>
+    <input type="text" id="fotoBarbeiro" required />
+    <button type="submit">Cadastrar Barbeiro</button>
+  </form>
+  <div class="tabela" style="overflow-x:auto; margin-top:20px;">
+    <table id="tabelaBarbeiros">
+      <thead>
+        <tr><th>Foto</th><th>Nome</th><th>Serviços Vinculados</th><th>Ações</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
 
       <div id="servicos" class="hidden">
         <h2>Serviços Cadastrados</h2>
@@ -315,21 +328,6 @@
           </table>
         </div>
       </div>
-      <div id="cadastroBarbeiro" class="hidden">
-  <h2>Cadastrar Barbeiro</h2>
-  <form id="formBarbeiro">
-    <label>Nome do Barbeiro</label>
-    <input type="text" id="nomeBarbeiro" required />
-    
-    <label>Foto (URL)</label>
-    <input type="text" id="fotoBarbeiro" required />
-    
-    <button type="submit">Cadastrar Barbeiro</button>
-  </form>
-  <h3>Barbeiros Cadastrados</h3>
-  <div id="listaBarbeiros"></div>
-</div>
-
     </main>
   </div>
 
@@ -373,6 +371,19 @@
       data.getDate() === hoje.getDate()
     );
   };
+const formBarbeiro = document.getElementById('formBarbeiro');
+const tabelaBarbeiros = document.querySelector('#tabelaBarbeiros tbody');
+
+formBarbeiro.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const nome = document.getElementById('nomeBarbeiro').value.trim();
+  const foto = document.getElementById('fotoBarbeiro').value.trim();
+  if (!nome || !foto) return;
+
+  const novoRef = push(ref(db, 'barbeiros'));
+  await set(novoRef, { nome, foto, servicos: [] });
+  formBarbeiro.reset();
+});
 
   const isThisWeek = (dataISO) => {
     const hoje = new Date();
@@ -395,111 +406,121 @@
     );
   };
 
-  const formBarbeiro = document.getElementById('formBarbeiro');
-const listaBarbeirosDiv = document.getElementById('listaBarbeiros');
-const selectBarbeiro = document.getElementById('selectBarbeiro');
-
-// Salvar barbeiro
-formBarbeiro?.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const nome = document.getElementById('nomeBarbeiro').value.trim();
-  const foto = document.getElementById('fotoBarbeiro').value.trim();
-
-  if (!nome || !foto) return;
-
-  const novoRef = push(ref(db, 'barbeiros'));
-  await set(novoRef, { nome, foto });
-
-  formBarbeiro.reset();
-});
-
-// Carregar barbeiros e preencher a lista e o select
-function carregarBarbeiros() {
-  onValue(ref(db, 'barbeiros'), (snapshot) => {
-    listaBarbeirosDiv.innerHTML = '';
-    selectBarbeiro.innerHTML = '<option value="">Selecione um barbeiro</option>';
-
-    snapshot.forEach(child => {
-      const barbeiro = child.val();
-      const id = child.key;
-
-      // Exibir lista
-      const div = document.createElement('div');
-      div.innerHTML = `
-        <p><img src="${barbeiro.foto}" style="max-width:60px; vertical-align:middle; border-radius:50%;"> ${barbeiro.nome}</p>
-      `;
-      listaBarbeirosDiv.appendChild(div);
-
-      // Preencher select
-      const option = document.createElement('option');
-      option.value = id;
-      option.textContent = barbeiro.nome;
-      selectBarbeiro.appendChild(option);
-    });
-  });
-}
-
-carregarBarbeiros();
-
-
   formServico.addEventListener('submit', async (e) => {
     e.preventDefault();
     const nome = document.getElementById('nomeServico').value.trim();
     const preco = document.getElementById('precoServico').value.trim();
     const tempo = document.getElementById('tempoServico').value.trim();
     const imagem = document.getElementById('imagemServico').value.trim();
-    const barbeiroId = document.getElementById('selectBarbeiro').value;
 
-
-    if (!nome || !preco || !tempo || !imagem || !barbeiroId) return;
+    if (!nome || !preco || !tempo || !imagem) return;
 
     if (servicoEditando) {
-  await update(ref(db, `servicos/${servicoEditando}`), { nome, preco, tempo, imagem, barbeiroId });
-  servicoEditando = null;
-  btnSalvar.textContent = "Cadastrar Serviço";
-} else {
-  const novoRef = push(ref(db, 'servicos'));
-  await set(novoRef, { nome, preco, tempo, imagem, barbeiroId });
-}
+      await update(ref(db, `servicos/${servicoEditando}`), { nome, preco, tempo, imagem });
+      servicoEditando = null;
+      btnSalvar.textContent = "Cadastrar Serviço";
+    } else {
+      const novoRef = push(ref(db, 'servicos'));
+      await set(novoRef, { nome, preco, tempo, imagem });
+    }
 
-  onValue(ref(db, 'servicos'), async (snapshot) => {
-  const barbeirosSnapshot = await get(ref(db, 'barbeiros'));
-  const barbeiros = barbeirosSnapshot.exists() ? barbeirosSnapshot.val() : {};
+    formServico.reset();
+  });
+onValue(ref(db, 'barbeiros'), async (snapshot) => {
+  tabelaBarbeiros.innerHTML = '';
+  const servicosSnapshot = await get(ref(db, 'servicos'));
+  const servicos = servicosSnapshot.exists() ? servicosSnapshot.val() : {};
 
-  tabelaServicos.innerHTML = '';
   snapshot.forEach(child => {
-    const { nome, preco, tempo, imagem, barbeiroId } = child.val();
-    const barbeiroNome = barbeiros?.[barbeiroId]?.nome || 'Não vinculado';
-    const barbeiroFoto = barbeiros?.[barbeiroId]?.foto || '';
-
+    const barbeiro = child.val();
     const tr = document.createElement('tr');
+
+    // Listar serviços vinculados
+    const servicosVinculados = barbeiro.servicos?.map(id => servicos[id]?.nome || 'Desconhecido').join(', ') || 'Nenhum';
+
     tr.innerHTML = `
-      <td><img src="${imagem}" /></td>
-      <td>${nome}<br><small><img src="${barbeiroFoto}" style="width:20px;border-radius:50%;"> ${barbeiroNome}</small></td>
-      <td>R$ ${preco}</td>
-      <td>${tempo} min</td>
+      <td><img src="${barbeiro.foto}" width="60" /></td>
+      <td>${barbeiro.nome}</td>
+      <td>${servicosVinculados}</td>
       <td>
-        <button onclick="editarServico('${child.key}', '${nome}', '${preco}', '${tempo}', '${imagem}', '${barbeiroId}')">Editar</button>
-        <button onclick="removerServico('${child.key}')">Excluir</button>
+        <button onclick="excluirBarbeiro('${child.key}')">Excluir</button>
+        <button onclick="gerenciarServicos('${child.key}')">Vincular Serviços</button>
       </td>
     `;
-    tabelaServicos.appendChild(tr);
+    tabelaBarbeiros.appendChild(tr);
   });
 });
+window.excluirBarbeiro = async (id) => {
+  if (confirm("Deseja realmente excluir este barbeiro?")) {
+    await remove(ref(db, `barbeiros/${id}`));
+  }
+};
+window.gerenciarServicos = async (barbeiroId) => {
+  const barbeiroSnap = await get(ref(db, `barbeiros/${barbeiroId}`));
+  const servicosSnap = await get(ref(db, 'servicos'));
+  const barbeiro = barbeiroSnap.val();
+  const servicos = servicosSnap.val();
 
+  const selecionados = barbeiro.servicos || [];
+  const novoSet = [];
 
-  window.editarServico = (id, nome, preco, tempo, imagem, barbeiroId) => {
-  document.getElementById('nomeServico').value = nome;
-  document.getElementById('precoServico').value = preco;
-  document.getElementById('tempoServico').value = tempo;
-  document.getElementById('imagemServico').value = imagem;
-  document.getElementById('selectBarbeiro').value = barbeiroId || '';
-  servicoEditando = id;
-  btnSalvar.textContent = "Salvar Edição";
-  mostrar('cadastro');
-  document.getElementById('menuLateral').classList.remove('menu-open');
+  const opcoes = Object.entries(servicos).map(([id, s]) => {
+    const checked = selecionados.includes(id) ? 'checked' : '';
+    return `<label><input type="checkbox" value="${id}" ${checked}> ${s.nome}</label>`;
+  }).join('<br>');
+
+  const container = document.createElement('div');
+  container.innerHTML = `
+    <div style="background:#333;padding:20px;border-radius:10px;">
+      <h3>Serviços de ${barbeiro.nome}</h3>
+      ${opcoes}
+      <br><br>
+      <button id="salvarServicos">Salvar</button>
+    </div>
+  `;
+
+  const modal = document.createElement('div');
+  modal.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:#000a;display:flex;align-items:center;justify-content:center;z-index:9999;";
+  modal.appendChild(container);
+  document.body.appendChild(modal);
+
+  document.getElementById('salvarServicos').onclick = async () => {
+    const checks = container.querySelectorAll('input[type="checkbox"]:checked');
+    const novos = Array.from(checks).map(c => c.value);
+    await update(ref(db, `barbeiros/${barbeiroId}`), { servicos: novos });
+    document.body.removeChild(modal);
+  };
 };
 
+  onValue(ref(db, 'servicos'), (snapshot) => {
+    tabelaServicos.innerHTML = '';
+    snapshot.forEach(child => {
+      const { nome, preco, tempo, imagem } = child.val();
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><img src="${imagem}" /></td>
+        <td>${nome}</td>
+        <td>R$ ${preco}</td>
+        <td>${tempo} min</td>
+        <td>
+          <button onclick="editarServico('${child.key}', '${nome}', '${preco}', '${tempo}', '${imagem}')">Editar</button>
+          <button onclick="removerServico('${child.key}')">Excluir</button>
+        </td>
+      `;
+      tabelaServicos.appendChild(tr);
+    });
+  });
+
+  window.editarServico = (id, nome, preco, tempo, imagem) => {
+    document.getElementById('nomeServico').value = nome;
+    document.getElementById('precoServico').value = preco;
+    document.getElementById('tempoServico').value = tempo;
+    document.getElementById('imagemServico').value = imagem;
+    servicoEditando = id;
+    btnSalvar.textContent = "Salvar Edição";
+    mostrar('cadastro');
+    document.getElementById('menuLateral').classList.remove('menu-open');
+  };
 
   window.removerServico = async (id) => {
     if (confirm('Deseja excluir este serviço?')) {
