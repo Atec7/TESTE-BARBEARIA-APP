@@ -341,14 +341,15 @@
   });
 
   const firebaseConfig = {
-    apiKey: "AIzaSyD9kWG_RgdfBURwHafLWcN3P_qVxMvqHTE",
-    authDomain: "demobarbearia-4eb73.firebaseapp.com",
-    databaseURL: "https://demobarbearia-4eb73-default-rtdb.firebaseio.com",
-    projectId: "demobarbearia-4eb73",
-    storageBucket: "demobarbearia-4eb73.appspot.com",
-    messagingSenderId: "522986196174",
-    appId: "1:522986196174:web:7d78eb757acf64f3ff149f"
-  };
+    apiKey: "AIzaSyAbUILxEOHP4Vg18Qw-YpCnoh41kOGwLk0",
+    authDomain: "fir-barber-premium.firebaseapp.com",
+    databaseURL: "https://fir-barber-premium-default-rtdb.firebaseio.com/",
+    projectId: "fir-barber-premium",
+  storageBucket: "fir-barber-premium.firebasestorage.app",
+  messagingSenderId: "35107383104",
+  appId: "1:35107383104:web:993f10c7d0163f06f23ca5",
+  measurementId: "G-5DTQQX4T3R"
+};
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
@@ -530,7 +531,7 @@ window.gerenciarServicos = async (barbeiroId) => {
 
   async function carregarAgendamentos() {
     const snapshot = await get(ref(db, 'agendamentos'));
-    const servicosSnapshot = await (await fetch(`https://demobarbearia-4eb73-default-rtdb.firebaseio.com/servicos.json`)).json();
+    const servicosSnapshot = await (await fetch(`https://fir-barber-premium-default-rtdb.firebaseio.com/servicos.json`)).json();
 
     tabelaAgendamentos.innerHTML = '';
     if (!snapshot.exists()) return;
@@ -761,3 +762,4 @@ function tocarAudioNotificacao() {
 
 </body>
 </html>
+
